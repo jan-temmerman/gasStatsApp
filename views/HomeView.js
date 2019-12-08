@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native'
 
-import db from '../db'
+import db from '../db/db'
 
 export default function HomeView() {
 
