@@ -10,7 +10,6 @@ npm-debug.*
 web-build/
 web-report/
 
-db/
 
 # macOS
 .DS_Store
