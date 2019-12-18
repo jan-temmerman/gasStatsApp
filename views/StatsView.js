@@ -62,19 +62,13 @@ export default function StatsView() {
                 })
 
                 kmDifference = kmValue2 - kmValue1
-                economy = (kmDifference / literDifference).toFixed(0)
+                economy = (literDifference / (kmDifference / 100)).toFixed(2)
 
                 /*let msDiff = new Date(date1).getTime() - new Date(date2).getTime();    //Future date - current date
                 daysSincePumped = Math.floor(msDiff / (1000 * 60 * 60 * 24));
 
                 console.log(date1)*/
-
-                const stats = {
-                    kmDifference: kmDifference,
-                    literDifference: literDifference,
-                    economy: economy,
-                }
-                return "+ " + kmDifference + " km | - " + literDifference + " L | " + economy + " km/L"
+                return "+ " + kmDifference + " km | - " + literDifference + " L | " + economy + " L/100km"
             }
         } else if(returnType == "object") {
             if( Object.keys(data).indexOf(key) > 0) {
@@ -93,7 +87,7 @@ export default function StatsView() {
                     })
 
                     kmDifference = kmValue2 - kmValue1
-                    economy = (kmDifference / literDifference).toFixed(0)
+                    economy = (literDifference / (kmDifference / 100)).toFixed(2)
 
                     /*let msDiff = new Date(date1).getTime() - new Date(date2).getTime();    //Future date - current date
                     daysSincePumped = Math.floor(msDiff / (1000 * 60 * 60 * 24));

@@ -92,11 +92,11 @@ export default function DetailView(props) {
                             <Text style={styles.subheading}>Stats</Text>
                         </View>
                         <View style={styles.container}>
-                            <Text style={styles.label}>Km's Gereden</Text>
-                            <Text style={styles.data}>Je hebt <Text style={{fontWeight: '700'}}>{stats.kmDifference} km's</Text> gereden sinds de laatste keer dat je hebt getankt.</Text>
+                            <Text style={styles.label}>Afstand afgelegd</Text>
+                            <Text style={styles.data}>Je hebt <Text style={{fontWeight: '700'}}>{stats.kmDifference} km</Text> gereden sinds de vorige keer dat je hebt getankt.</Text>
 
-                            <Text style={styles.label}>Efficiëntie</Text>
-                            <Text style={styles.data}>Je had een gemiddelde efficiëntie van <Text style={{fontWeight: '700'}}>{stats.economy} km/L </Text>.</Text>
+                            <Text style={styles.label}>Verbruik</Text>
+                            <Text style={styles.data}>Je had een gemiddeld verbruik van <Text style={{fontWeight: '700'}}>{stats.economy} L/100km </Text>.</Text>
                         </View>
                     </View>
                 </ScrollView>
@@ -203,4 +203,5 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
 });
+
 
