@@ -55,8 +55,32 @@ export default function HomeView() {
             price: priceTotal,
             liters : litersAmount,
             rate: (priceTotal.replace(',', '.') / litersAmount.replace(',', '.')).toFixed(3)
-        })
-        Actions.pop()
+        }, function(error) {
+            if (error) {
+                Alert.alert(
+                    'Something went wrong.',
+                    error,
+                    [
+                        {
+                          text: 'Cancel',
+                          style: 'cancel',
+                        },
+                        {text: 'Try Again', onPress: () => sendData()},
+                    ],
+                    {cancelable: true},
+                  )
+            } else {
+                Alert.alert(
+                    'Data was saved!',
+                    'Refresh the feed.',
+                    [
+                      {text: 'OK'},
+                    ],
+                    {cancelable: false},
+                  )
+                  Actions.pop()
+            }
+          })
     }
 
     const getDate = () => {
@@ -89,7 +113,7 @@ export default function HomeView() {
 
     return (
         <View style={{flex:1}}>
-            <StatusBar barStyle="dark-content" />
+            <StatusBar barStyle="light-content" />
             <LinearGradient colors={['#1b89e4', '#0daeda']} start={[0, 0]} end={[1, 1]} style={{flexDirection: 'row', backgroundColor: '#FFF', paddingTop: 50, padding: 10}}>
                 <TouchableOpacity style={{width: 26, height: 26, alignSelf: 'center', marginRight: 10,}} onPress={() => Actions.pop()}>
                     <Image style={{width: 26, height: 26, alignSelf: 'center'}} source={require('../assets/back.png')} />

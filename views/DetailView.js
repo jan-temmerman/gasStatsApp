@@ -5,15 +5,18 @@ import { LinearGradient } from 'expo-linear-gradient'
 
 export default function DetailView(props) {
     const [data, setData] = useState({})
+    const [stats, setStats] = useState({})
 
     useEffect(() => {
         setData(props.data)
+        setStats(props.stats)
         return
     }, [])
 
-    return (
+    if(stats == 0)
+        return (
             <View style={{flex:1}}>
-                <StatusBar barStyle="dark-content" />
+                <StatusBar barStyle="light-content" />
                 <LinearGradient colors={['#1b89e4', '#0daeda']} start={[0, 0]} end={[1, 1]} style={{flexDirection: 'row', backgroundColor: '#FFF', paddingTop: 50, padding: 10}}>
                     <TouchableOpacity style={{width: 26, height: 26, alignSelf: 'center', marginRight: 10}} onPress={() => Actions.pop()}>
                         <Image style={{width: 26, height: 26, alignSelf: 'center'}} source={require('../assets/back.png')} />
@@ -44,18 +47,70 @@ export default function DetailView(props) {
                             <Text style={styles.label}>Prijs / Liter</Text>
                             <Text style={styles.data}>€{data.rate}</Text>
                         </View>
-
                     </View>
                 </ScrollView>
             </View>
-    );
+        );
+
+    if(stats != 0)
+        return (
+            <View style={{flex:1}}>
+                <StatusBar barStyle="light-content" />
+                <LinearGradient colors={['#1b89e4', '#0daeda']} start={[0, 0]} end={[1, 1]} style={{flexDirection: 'row', backgroundColor: '#FFF', paddingTop: 50, padding: 10}}>
+                    <TouchableOpacity style={{width: 26, height: 26, alignSelf: 'center', marginRight: 10}} onPress={() => Actions.pop()}>
+                        <Image style={{width: 26, height: 26, alignSelf: 'center'}} source={require('../assets/back.png')} />
+                    </TouchableOpacity>
+                    <Text style={styles.heading}>Details</Text>
+                </LinearGradient>
+                <ScrollView style={{flex: 1,}}>
+                    <View style={styles.card}>
+                        <View style={styles.subheadingContainer}>
+                            <Text style={styles.subheading}>Details Tankbeurt</Text>
+                        </View>
+                        <View style={styles.container}>
+                            <Text style={styles.label}>Datum</Text>
+                            <Text style={styles.data}>{data.date}</Text>
+
+                            <Text style={styles.label}>Tijd</Text>
+                            <Text style={styles.data}>{data.time}</Text>
+
+                            <Text style={styles.label}>Aantal Km's</Text>
+                            <Text style={styles.data}>{data.km} km</Text>
+
+                            <Text style={styles.label}>Totale Prijs</Text>
+                            <Text style={styles.data}>€{data.price}</Text>
+
+                            <Text style={styles.label}>Liters Getankt </Text>
+                            <Text style={styles.data}>{data.liters} L</Text>
+
+                            <Text style={styles.label}>Prijs / Liter</Text>
+                            <Text style={styles.data}>€{data.rate}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.card}>
+                        <View style={styles.subheadingContainer}>
+                            <Text style={styles.subheading}>Stats</Text>
+                        </View>
+                        <View style={styles.container}>
+                            <Text style={styles.label}>Km's Gereden</Text>
+                            <Text style={styles.data}>Je hebt <Text style={{fontWeight: '700'}}>{stats.kmDifference} km's</Text> gereden sinds de laatste keer dat je hebt getankt.</Text>
+
+                            <Text style={styles.label}>Efficiëntie</Text>
+                            <Text style={styles.data}>Je had een gemiddelde efficiëntie van <Text style={{fontWeight: '700'}}>{stats.economy} km/L </Text>.</Text>
+                        </View>
+                    </View>
+                </ScrollView>
+            </View>
+        );
 }
 
 const styles = StyleSheet.create({
     card: {
         flex: 1,
         backgroundColor: '#fff',
-        margin: 30,
+        marginTop: 30,
+        width: '85%',
+        alignSelf: 'center',
         borderRadius: 10,
         justifyContent: 'space-between',
         shadowColor: "#000",

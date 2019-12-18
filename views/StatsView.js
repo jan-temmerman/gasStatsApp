@@ -7,7 +7,9 @@ import db from '../db/db'
 
 export default function StatsView() {
     const [data, setData] = useState({})
-    const [refreshing, setRefreshing] = React.useState(true);
+    const [refreshing, setRefreshing] = React.useState(true)
+    
+    let twoStats = []
 
     useEffect(() => {
         readDb()
@@ -31,9 +33,88 @@ export default function StatsView() {
         });
     }
 
+    const getStats = (gasStat, key,  returnType) => {
+        let kmDifference = 0
+        let kmValue1 = 0
+        let kmValue2 = 0
+        let literDifference = 0
+        let economy = 0
+        let daysSincePumped = 0
+        let date1 = 0
+        let date2 = 0
+        let stats = 0
+
+        if(returnType == "string") {
+            if(twoStats.length == 2)
+                twoStats.shift()
+            if(gasStat)
+                twoStats.push(gasStat)
+
+            if(twoStats.length == 2) {
+                Object.entries(twoStats[0]).map(([key, value]) => {
+                    kmValue1 += parseInt(value.km)
+                    date1 = value.date
+                })
+                Object.entries(twoStats[1]).map(([key, value]) => {
+                    kmValue2 += parseInt(value.km)
+                    date2 = value.date
+                    literDifference += parseInt(value.liters)
+                })
+
+                kmDifference = kmValue2 - kmValue1
+                economy = (kmDifference / literDifference).toFixed(0)
+
+                /*let msDiff = new Date(date1).getTime() - new Date(date2).getTime();    //Future date - current date
+                daysSincePumped = Math.floor(msDiff / (1000 * 60 * 60 * 24));
+
+                console.log(date1)*/
+
+                const stats = {
+                    kmDifference: kmDifference,
+                    literDifference: literDifference,
+                    economy: economy,
+                }
+                return "+ " + kmDifference + " km | - " + literDifference + " L | " + economy + " km/L"
+            }
+        } else if(returnType == "object") {
+            if( Object.keys(data).indexOf(key) > 0) {
+                const previousStat = data[Object.keys(data)[Object.keys(data).indexOf(key) - 1]]
+                twoStats = [previousStat, gasStat]
+
+                if(twoStats.length == 2) {
+                    Object.entries(twoStats[0]).map(([key, value]) => {
+                        kmValue1 += parseInt(value.km)
+                        date1 = value.date
+                    })
+                    Object.entries(twoStats[1]).map(([key, value]) => {
+                        kmValue2 += parseInt(value.km)
+                        date2 = value.date
+                        literDifference += parseInt(value.liters)
+                    })
+
+                    kmDifference = kmValue2 - kmValue1
+                    economy = (kmDifference / literDifference).toFixed(0)
+
+                    /*let msDiff = new Date(date1).getTime() - new Date(date2).getTime();    //Future date - current date
+                    daysSincePumped = Math.floor(msDiff / (1000 * 60 * 60 * 24));
+
+                    console.log(date1)*/
+
+                    stats = {
+                        kmDifference: kmDifference,
+                        literDifference: literDifference,
+                        economy: economy,
+                    }
+                } 
+            }
+
+            return stats
+        }
+    }
+
     return (
             <View style={{flex:1}}>
-                <StatusBar barStyle="dark-content" />
+                <StatusBar barStyle="light-content" />
                 <LinearGradient colors={['#1b89e4', '#0daeda']} start={[0, 0]} end={[1, 1]} style={{flexDirection: 'row', backgroundColor: '#FFF', paddingTop: 50, padding: 10}}>
                         <Text style={styles.heading}>Gas Stats</Text>
                 </LinearGradient>
@@ -49,10 +130,13 @@ export default function StatsView() {
                         {Object.entries(data).map(([key,v])=>{
                             return(
                                 <View key={key}>
-                                    <Text style={styles.label}>{key}</Text>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingLeft: '4%', paddingRight: '4%'}}>
+                                        <Text style={styles.label}>{key.replace(/-/g, '/')}</Text>
+                                        <Text>{getStats(v, key, "string")}</Text>
+                                    </View>
                                     {Object.entries(v).map(([key2,v2])=>{
                                         return(
-                                            <TouchableOpacity key={key2} style={styles.dataContainer} onPress={() => Actions.detail({data: v2})}>
+                                            <TouchableOpacity key={key2} style={styles.dataContainer} onPress={() => Actions.detail({data: v2, stats: getStats(v, key, "object")})}>
                                                 <Text style={styles.data}>{key2}</Text>
                                                 <Text style={styles.data}>{v2.km} km | €{v2.price}</Text>
                                             </TouchableOpacity>
@@ -84,7 +168,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
         paddingTop: 20,
         fontWeight: '600',
-        paddingLeft: '4%',
     },
     data: {
         color: '#0c3759',
@@ -138,4 +221,3 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
 });
-
