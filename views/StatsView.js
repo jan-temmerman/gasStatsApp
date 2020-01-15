@@ -6,7 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import db from '../db/db'
 
 export default function StatsView() {
-    const [data, setData] = useState({})
+    const [data, setData] = useState([])
     const [refreshing, setRefreshing] = React.useState(true)
     
     let twoStats = []
@@ -24,9 +24,20 @@ export default function StatsView() {
     const readDb = () => {
         db.ref('/stats').once('value')
         .then(function(snapshot) {
-            if(snapshot.val())
-                setData(snapshot.val())
-            else
+            if(snapshot.val()) {
+                let dataObject = snapshot.val()
+                var dataArray = Object.keys(dataObject).map(function(key) {
+                    return [key, dataObject[key]];
+                  });
+                dataArray.sort(function(a, b) {
+                    let key1 = Object.keys(a[1])
+                    let key2 = Object.keys(b[1])
+                    a = a[1][key1].km
+                    b = b[1][key2].km
+                    return a>b ? -1 : a<b ? 1 : 0;
+                })
+                setData(dataArray)
+            } else
                 setData({'No Data': ""})
 
             setRefreshing(false)
@@ -52,13 +63,13 @@ export default function StatsView() {
 
             if(twoStats.length == 2) {
                 Object.entries(twoStats[0]).map(([key, value]) => {
-                    kmValue1 += parseInt(value.km)
+                    kmValue2 += parseInt(value.km)
                     date1 = value.date
+                    literDifference += parseInt(value.liters)
                 })
                 Object.entries(twoStats[1]).map(([key, value]) => {
-                    kmValue2 += parseInt(value.km)
+                    kmValue1 += parseInt(value.km)
                     date2 = value.date
-                    literDifference += parseInt(value.liters)
                 })
 
                 kmDifference = kmValue2 - kmValue1
@@ -71,10 +82,11 @@ export default function StatsView() {
                 return "+ " + kmDifference + " km | - " + literDifference + " L | " + economy + " L/100km"
             }
         } else if(returnType == "object") {
-            if( Object.keys(data).indexOf(key) > 0) {
-                const previousStat = data[Object.keys(data)[Object.keys(data).indexOf(key) - 1]]
+            let index = data.findIndex((object) => object[0] == key)
+            if( index < (data.length - 1)) {
+                const previousStat = data[index + 1][1]
                 twoStats = [previousStat, gasStat]
-
+                console.log(twoStats)
                 if(twoStats.length == 2) {
                     Object.entries(twoStats[0]).map(([key, value]) => {
                         kmValue1 += parseInt(value.km)
@@ -101,7 +113,6 @@ export default function StatsView() {
                     }
                 } 
             }
-
             return stats
         }
     }
@@ -121,7 +132,7 @@ export default function StatsView() {
                 }
                 >
                     <View style={styles.container}>
-                        {Object.entries(data).map(([key,v])=>{
+                        {data.map(([key,v])=>{
                             return(
                                 <View key={key}>
                                     <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingLeft: '4%', paddingRight: '4%'}}>

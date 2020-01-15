@@ -10,6 +10,7 @@ export default function DetailView(props) {
     useEffect(() => {
         setData(props.data)
         setStats(props.stats)
+        console.log(props.stats)
         return
     }, [])
 
